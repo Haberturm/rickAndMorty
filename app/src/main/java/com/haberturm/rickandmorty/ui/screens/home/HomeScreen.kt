@@ -24,6 +24,5 @@ private fun HomeScreen(
             HomeEvent.NavigateTo(DetailsScreenRoute.get(0))
         )
     }) {
-
     }
 }
