@@ -1,17 +1,23 @@
 package com.haberturm.rickandmorty.ui.screens.home
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.haberturm.rickandmorty.R
 import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.screens.details.DetailsScreenRoute
 import com.haberturm.rickandmorty.ui.uiModels.GeneralUiModel
 import com.haberturm.rickandmorty.ui.views.Item
-import org.jdom2.Content
+import com.haberturm.rickandmorty.ui.views.PageSelector
 
 object HomeScreenRoute : NavRoute<HomeViewModel> {
     override val route = "home/"
@@ -53,17 +59,25 @@ private fun Content(
     navigationAction: () -> Unit
 ) {
     LazyColumn {
+        item {
+            Row(Modifier.padding(4.dp)) {
+                PageSelector(currentPageNum = 22, lastPageNum = 48)
+            }
+        }
         items(charactersList) { character ->
-            Item(
-                name = character.name,
-                race = character.race,
-                gender = character.gender,
-                image = character.image,
-                action = {
-                    navigationAction()
-                    /*TODO*/
-                }
-            )
+            Column(Modifier.padding(horizontal = 8.dp)) {
+                Item(
+                    name = character.name,
+                    race = character.race,
+                    gender = character.gender,
+                    image = character.image,
+                    action = {
+                        navigationAction()
+                        /*TODO*/
+                    }
+                )
+            }
+
         }
     }
 }

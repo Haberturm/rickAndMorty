@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.size as size
 import com.haberturm.rickandmorty.R
 import com.haberturm.rickandmorty.ui.theme.AdditionalTextColor
+import com.haberturm.rickandmorty.ui.theme.ClickableColor
 
 @Composable
 fun Item(
@@ -34,7 +35,7 @@ fun Item(
     Card(
         elevation = 10.dp,
         modifier = Modifier
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
             .fillMaxWidth()
             .clickable {
                 action()
@@ -52,7 +53,7 @@ fun Item(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .border(2.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
+                    .border(2.dp, ClickableColor, CircleShape)
             )
             Column(
                 modifier = Modifier
