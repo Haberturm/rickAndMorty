@@ -38,7 +38,12 @@ private fun HomeScreen(
         is DataState.Success -> {
             Content(
                 charactersList = (dataState.value as DataState.Success).data as List<GeneralUiModel>, // in this case it is safe
-                navigationAction = { viewModel.onEvent(HomeEvent.NavigateTo(DetailsScreenRoute.get(0))) }
+                navigationAction = { viewModel.onEvent(HomeEvent.NavigateTo(DetailsScreenRoute.get(0))) },
+                pageSelectorTextValue = viewModel.pageSelectorText.collectAsState().value,
+                updatePageSelectorTextValue = fun(text: String) {
+                    viewModel.onEvent(HomeEvent.UpdatePageSelectorText(text))
+                }
+
             )
         }
         is DataState.Loading -> {
@@ -56,12 +61,19 @@ private fun HomeScreen(
 @Composable
 private fun Content(
     charactersList: List<GeneralUiModel>,
-    navigationAction: () -> Unit
+    navigationAction: () -> Unit,
+    pageSelectorTextValue: String,
+    updatePageSelectorTextValue: (String) -> Unit
 ) {
     LazyColumn {
         item {
             Row(Modifier.padding(4.dp)) {
-                PageSelector(currentPageNum = 22, lastPageNum = 48)
+                PageSelector(
+                    currentPageNum = 1,
+                    lastPageNum = 48,
+                    pageSelectorTextValue = pageSelectorTextValue,
+                    updatePageSelectorTextValue = updatePageSelectorTextValue
+                )
             }
         }
         items(charactersList) { character ->

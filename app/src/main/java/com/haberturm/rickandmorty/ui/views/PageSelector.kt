@@ -26,13 +26,14 @@ import com.haberturm.rickandmorty.ui.theme.SelectedColor
 @Composable
 fun PageSelector(
     currentPageNum: Int,
-    lastPageNum: Int
+    lastPageNum: Int,
+    pageSelectorTextValue: String,
+    updatePageSelectorTextValue: (String) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth(),
-        //.height(50.dp),
 
     ) {
         /*
@@ -79,14 +80,23 @@ fun PageSelector(
                 description = "next page"
             )
         }
-        PageSelectorGoToTextField()
+
+        PageSelectorGoToTextField(
+            textValue = pageSelectorTextValue,
+            updateText = updatePageSelectorTextValue,
+        )
     }
 }
 
 @Composable
 @Preview
 fun PageSelectorPrev() {
-    PageSelector(currentPageNum = 15, lastPageNum = 48)
+    PageSelector(
+        currentPageNum = 15,
+        lastPageNum = 48,
+        "",
+        {}
+    )
 }
 
 @Composable
@@ -157,15 +167,15 @@ private fun PageSelectorDigitItem(
 }
 
 @Composable
-private fun PageSelectorGoToTextField() {
+private fun PageSelectorGoToTextField(
+    textValue: String,
+    updateText: (String) -> Unit
+) {
     val focusManager = LocalFocusManager.current
-    val pageFieldValue = remember {
-        mutableStateOf("")
-    }
     OutlinedTextField(
-        value = pageFieldValue.value,
+        value = textValue,
         onValueChange = {
-            pageFieldValue.value = it
+            updateText(it)
         },
         label = {
             Text(
