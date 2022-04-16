@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -107,8 +108,8 @@ private fun PageSelectorArrow(
     OutlinedButton(
         onClick = { /*TODO*/ },
         modifier = Modifier
-            .size(30.dp)
-            .padding(end = 4.dp),
+            .size(dimensionResource(id = R.dimen.page_selector_item_size).value.dp)
+            .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp),
         contentPadding = PaddingValues(
             start = 1.dp,
             top = 1.dp,
@@ -130,7 +131,7 @@ private fun PageSelectorDotsItem() {
         text = "...",
         textAlign = TextAlign.Center,
         modifier = Modifier
-            .padding(end = 4.dp)
+            .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp)
             .size(20.dp),
 
         )
@@ -159,8 +160,8 @@ private fun PageSelectorDigitItem(
             )
         },
         modifier = Modifier
-            .size(30.dp)
-            .padding(end = 4.dp),
+            .size(dimensionResource(id = R.dimen.page_selector_item_size).value.dp)
+            .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp),
     ) {
         Text(text = digit.toString())
     }
