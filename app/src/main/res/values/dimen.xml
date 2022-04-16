@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_size">20.sp</dimen>
+    <dimen name="page_selector_item_size">30.dp</dimen>
+    <dimen name="page_selector_item_padding">4.dp</dimen>
+</resources>
