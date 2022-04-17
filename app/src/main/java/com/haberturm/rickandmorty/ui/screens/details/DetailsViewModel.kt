@@ -36,7 +36,6 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-
     private fun getCharacter(id: Int) = viewModelScope.launch{
         _dataState.value = DataState.Loading
         repository.getSingleCharacter(id)

@@ -5,8 +5,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -30,13 +28,14 @@ fun PageSelector(
     lastPageNum: Int,
     pageSelectorTextValue: String,
     updatePageSelectorTextValue: (String) -> Unit,
+    pageNavigationAction: (Int) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth(),
 
-    ) {
+        ) {
         /*
         "magic const" padding because of default padding that 'label' field add to TextField".
         This* padding need for vertical alignment
@@ -44,7 +43,9 @@ fun PageSelector(
         Row(Modifier.padding(top = 5.dp)) {//*
             PageSelectorArrow(
                 painterRes = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_left_24),
-                description = "previous page"
+                description = ArrowIconDescription.PreviousPage().description,
+                navigationAction = { pageNavigationAction(currentPageNum - 1) },
+                active = currentPageNum != 1
             )
             val numOfSelectorItems = 7
             if (currentPageNum in 1..4) {
@@ -58,16 +59,14 @@ fun PageSelector(
                     }
                 }
 
-            }
-            else if (currentPageNum in lastPageNum - 4..lastPageNum) {
+            } else if (currentPageNum in lastPageNum - 4..lastPageNum) {
                 PageSelectorDigitItem(digit = 1, selected = false)
                 PageSelectorDotsItem()
                 ((lastPageNum - numOfSelectorItems + 2)..lastPageNum).forEach {
                     PageSelectorDigitItem(digit = it, selected = it == currentPageNum)
                 }
 
-            }
-            else {
+            } else {
                 PageSelectorDigitItem(digit = 1, selected = false)
                 PageSelectorDotsItem()
                 (currentPageNum - 1..currentPageNum + 1).forEach {
@@ -78,7 +77,9 @@ fun PageSelector(
             }
             PageSelectorArrow(
                 painterRes = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
-                description = "next page"
+                description = ArrowIconDescription.NextPage().description,
+                navigationAction = { pageNavigationAction(currentPageNum + 1) },
+                active = currentPageNum != lastPageNum
             )
         }
 
@@ -96,17 +97,24 @@ fun PageSelectorPrev() {
         currentPageNum = 15,
         lastPageNum = 48,
         "",
-        {}
+        {},
+        {},
     )
 }
 
 @Composable
 private fun PageSelectorArrow(
     painterRes: Painter,
-    description: String
+    description: String,
+    navigationAction: () -> Unit,
+    active: Boolean,
 ) {
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = {
+            if (active) {
+                navigationAction()
+            }
+        },
         modifier = Modifier
             .size(dimensionResource(id = R.dimen.page_selector_item_size).value.dp)
             .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp),
@@ -199,6 +207,10 @@ private fun PageSelectorGoToTextField(
         ),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
 
-    )
+        )
 }
 
+sealed class ArrowIconDescription() {
+    data class NextPage(val description: String = "Next Page") : ArrowIconDescription()
+    data class PreviousPage(val description: String = "Previous Page") : ArrowIconDescription()
+}

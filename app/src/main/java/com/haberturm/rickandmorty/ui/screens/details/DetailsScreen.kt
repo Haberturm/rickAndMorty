@@ -20,24 +20,23 @@ import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.nav.getOrThrow
 import com.haberturm.rickandmorty.ui.theme.ClickableColor
-import com.haberturm.rickandmorty.ui.theme.SelectedColor
 import com.haberturm.rickandmorty.ui.uiModels.DetailUiModel
 import com.haberturm.rickandmorty.ui.views.DetailInfoItem
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
 
-const val KEY_ARG = "ARG"
+const val KEY_ID = "ARG"
 
 object DetailsScreenRoute : NavRoute<DetailsViewModel> {
 
-    override val route = "details/{$KEY_ARG}/"
+    override val route = "details/{$KEY_ID}/"
 
-    fun get(index: Int): String = route.replace("{$KEY_ARG}", "$index")
+    fun get(id: Int): String = route.replace("{$KEY_ID}", "$id")
 
     fun getArgFrom(savedStateHandle: SavedStateHandle) =
-        savedStateHandle.getOrThrow<Int>(KEY_ARG)
+        savedStateHandle.getOrThrow<Int>(KEY_ID)
 
     override fun getArguments(): List<NamedNavArgument> = listOf(
-        navArgument(KEY_ARG) { type = NavType.IntType })
+        navArgument(KEY_ID) { type = NavType.IntType })
 
     @Composable
     override fun viewModel(): DetailsViewModel = hiltViewModel()
@@ -78,7 +77,6 @@ fun DetailsScreen(
                 Unit
             }
         }
-
     }
 }
 
@@ -103,7 +101,5 @@ private fun Content(
             lastLocation = characterData.lastLocation,
             numOfEpisodes = characterData.numOfEpisodes
         )
-
-
     }
 }
