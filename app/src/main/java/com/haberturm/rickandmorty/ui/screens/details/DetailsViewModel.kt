@@ -27,6 +27,16 @@ class DetailsViewModel @Inject constructor(
     init {
         getCharacter(id)
     }
+
+    fun onEvent(event: DetailsEvent){
+        when(event){
+            is DetailsEvent.OnNavigateUp ->{
+                routeNavigator.navigateUp()
+            }
+        }
+    }
+
+
     private fun getCharacter(id: Int) = viewModelScope.launch{
         _dataState.value = DataState.Loading
         repository.getSingleCharacter(id)
@@ -37,7 +47,6 @@ class DetailsViewModel @Inject constructor(
             .onEach { data ->
                 val uiData = data.toDetailUiModel()
                 _dataState.value = DataState.Success(uiData)
-                Log.i("DATA", "${(_dataState.value as DataState.Success).data}")
             }
             .launchIn(this)
 

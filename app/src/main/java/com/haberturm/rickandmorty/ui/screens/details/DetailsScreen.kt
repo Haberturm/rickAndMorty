@@ -53,7 +53,7 @@ fun DetailsScreen(
 ){
     Scaffold(topBar = {
         TopAppBar() {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { viewModel.onEvent(DetailsEvent.OnNavigateUp) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
                     contentDescription = "Back"
