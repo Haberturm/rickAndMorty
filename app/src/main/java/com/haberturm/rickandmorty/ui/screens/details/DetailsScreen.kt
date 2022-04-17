@@ -10,6 +10,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,7 +87,7 @@ private fun Content(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.default_padding).value.dp)
     ) {
         GeneralInfoItem(
             name = characterData.generalInfo.name,
@@ -100,5 +101,7 @@ private fun Content(
             lastLocation = characterData.lastLocation,
             numOfEpisodes = characterData.numOfEpisodes
         )
+
+
     }
 }

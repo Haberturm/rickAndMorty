@@ -33,7 +33,7 @@ fun GeneralInfoItem(
     Card(
         elevation = 10.dp,
         modifier = Modifier
-            .padding(vertical = 8.dp)
+            .padding(vertical = dimensionResource(id = R.dimen.default_padding).value.dp)
             .fillMaxWidth()
             .clickable {
                 action()
@@ -42,7 +42,7 @@ fun GeneralInfoItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(dimensionResource(id = R.dimen.default_padding).value.dp)
         ) {
             AsyncImage(
                 model = image,
@@ -55,7 +55,7 @@ fun GeneralInfoItem(
             )
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(dimensionResource(id = R.dimen.default_padding).value.dp)
             ) {
                 Text(text = name, fontSize = dimensionResource(id = R.dimen.header_size).value.sp)
                 Text(
