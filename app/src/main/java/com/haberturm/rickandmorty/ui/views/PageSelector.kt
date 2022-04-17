@@ -5,6 +5,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
@@ -31,6 +33,7 @@ fun PageSelector(
     updatePageSelectorTextValue: (String) -> Unit,
     pageNavigationAction: (Int) -> Unit,
     changeFocus: (Boolean) -> Unit,
+    textFieldError: Boolean
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -117,6 +120,7 @@ fun PageSelector(
                 pageNavigationAction(page)
             },
             changeFocus = changeFocus,
+            textFieldError = textFieldError
         )
     }
 }
@@ -130,7 +134,8 @@ fun PageSelectorPrev() {
         "",
         {},
         {},
-        {}
+        {},
+        false
     )
 }
 
@@ -214,9 +219,14 @@ private fun PageSelectorGoToTextField(
     textValue: String,
     updateText: (String) -> Unit,
     navigationAction: (Int) -> Unit,
-    changeFocus: (Boolean) -> Unit
+    changeFocus: (Boolean) -> Unit,
+    textFieldError: Boolean
 ) {
     val focusManager = LocalFocusManager.current
+    val localTextFieldError = remember {
+        mutableStateOf(textFieldError)
+    }
+
     OutlinedTextField(
         value = textValue,
         onValueChange = { text ->
@@ -239,8 +249,10 @@ private fun PageSelectorGoToTextField(
             .height(60.dp)
             .onFocusEvent {
                 if (it.isFocused) {
+                    localTextFieldError.value = false
                     changeFocus(true)
                 } else {
+                    localTextFieldError.value = textFieldError
                     changeFocus(false)
                 }
             },
@@ -259,6 +271,7 @@ private fun PageSelectorGoToTextField(
             focusManager.clearFocus()
             navigationAction(textValue.toInt())
         }),
+        isError = localTextFieldError.value
     )
 }
 

@@ -63,12 +63,18 @@ private fun HomeScreen(
                 },
                 pageSelectorState = viewModel.pageSelectorState.collectAsState().value,
                 pageNavigationAction = fun(page: Int) {
-                    viewModel.onEvent(HomeEvent.NavigateTo(HomeScreenRoute.get(page)))
+                    if (viewModel.checkPage(page)){
+                        viewModel.onEvent(HomeEvent.NavigateTo(HomeScreenRoute.get(page)))
+                        viewModel.onEvent(HomeEvent.PageSelectorError(false))
+                    }else{
+                        viewModel.onEvent(HomeEvent.PageSelectorError(true))
+                    }
                 },
                 pageSelectorFocus = viewModel.pageSelectorFocus.collectAsState().value,
                 pageSelectorChangeFocus = fun(isFocused: Boolean){
                     viewModel.onEvent(HomeEvent.ChangeFocus(isFocused))
-                }
+                },
+                pageSectorTextFieldError = viewModel.pageSelectorError.collectAsState().value
             )
         }
         is DataState.Loading -> {
@@ -92,7 +98,8 @@ private fun Content(
     pageSelectorState: PageSelectorState,
     pageNavigationAction: (Int) -> Unit,
     pageSelectorFocus: Boolean,
-    pageSelectorChangeFocus: (Boolean) -> Unit
+    pageSelectorChangeFocus: (Boolean) -> Unit,
+    pageSectorTextFieldError: Boolean
 ) {
     val focusManager = LocalFocusManager.current
     LazyColumn(Modifier.clickable {
@@ -106,7 +113,8 @@ private fun Content(
                     pageSelectorTextValue = pageSelectorTextValue,
                     updatePageSelectorTextValue = updatePageSelectorTextValue,
                     pageNavigationAction = pageNavigationAction,
-                    changeFocus = pageSelectorChangeFocus
+                    changeFocus = pageSelectorChangeFocus,
+                    textFieldError = pageSectorTextFieldError
                 )
             }
         }

@@ -33,6 +33,9 @@ class HomeViewModel @Inject constructor(
     private val _pageSelectorFocus: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val pageSelectorFocus: StateFlow<Boolean> = _pageSelectorFocus.asStateFlow()
 
+    private val _pageSelectorError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val pageSelectorError: StateFlow<Boolean> = _pageSelectorError.asStateFlow()
+
     private val page = HomeScreenRoute.getArgFrom(savedStateHandle)
 
     private val _pageSelectorState: MutableStateFlow<PageSelectorState> = MutableStateFlow(
@@ -55,6 +58,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ChangeFocus -> {
                 _pageSelectorFocus.value = event.isFocused
             }
+            is HomeEvent.PageSelectorError -> {
+                _pageSelectorError.value = event.error
+            }
         }
     }
 
@@ -74,4 +80,7 @@ class HomeViewModel @Inject constructor(
             }
             .launchIn(this)
     }
+
+    fun checkPage(selectedPage: Int): Boolean =
+        selectedPage in (1..pageSelectorState.value.totalPage)
 }
