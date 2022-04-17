@@ -30,6 +30,9 @@ class HomeViewModel @Inject constructor(
     private val _pageSelectorText: MutableStateFlow<String> = MutableStateFlow("")
     val pageSelectorText: StateFlow<String> = _pageSelectorText.asStateFlow()
 
+    private val _pageSelectorFocus: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val pageSelectorFocus: StateFlow<Boolean> = _pageSelectorFocus.asStateFlow()
+
     private val page = HomeScreenRoute.getArgFrom(savedStateHandle)
 
     private val _pageSelectorState: MutableStateFlow<PageSelectorState> = MutableStateFlow(
@@ -38,7 +41,6 @@ class HomeViewModel @Inject constructor(
     val pageSelectorState: StateFlow<PageSelectorState> = _pageSelectorState.asStateFlow()
 
     init {
-        //Log.i("PAGE", page.toString())
         getDataList()
     }
 
@@ -50,12 +52,15 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.UpdatePageSelectorText -> {
                 _pageSelectorText.value = event.text
             }
+            is HomeEvent.ChangeFocus -> {
+                _pageSelectorFocus.value = event.isFocused
+            }
         }
     }
 
     private fun getDataList() = viewModelScope.launch {
         _dataState.value = DataState.Loading
-        repository.getDataList()
+        repository.getDataList(page = page)
             .catch { e ->
                 _dataState.value = DataState.Failure(e)
                 Log.i("DATA-EXCEPTION", "$e")

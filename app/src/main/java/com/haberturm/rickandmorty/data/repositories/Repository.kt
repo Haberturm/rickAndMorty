@@ -5,6 +5,6 @@ import com.haberturm.rickandmorty.data.network.pojo.Results
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    fun getDataList(): Flow<CharacterResponse>
+    fun getDataList(page: Int): Flow<CharacterResponse>
     fun getSingleCharacter(id: Int): Flow<Results>
 }

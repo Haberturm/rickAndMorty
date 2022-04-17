@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
@@ -29,6 +30,7 @@ fun PageSelector(
     pageSelectorTextValue: String,
     updatePageSelectorTextValue: (String) -> Unit,
     pageNavigationAction: (Int) -> Unit,
+    changeFocus: (Boolean) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -111,9 +113,10 @@ fun PageSelector(
         PageSelectorGoToTextField(
             textValue = pageSelectorTextValue,
             updateText = updatePageSelectorTextValue,
-            navigationAction = fun(page: Int){
-                 pageNavigationAction(page)
-            }
+            navigationAction = fun(page: Int) {
+                pageNavigationAction(page)
+            },
+            changeFocus = changeFocus,
         )
     }
 }
@@ -127,6 +130,7 @@ fun PageSelectorPrev() {
         "",
         {},
         {},
+        {}
     )
 }
 
@@ -209,7 +213,8 @@ private fun PageSelectorDigitItem(
 private fun PageSelectorGoToTextField(
     textValue: String,
     updateText: (String) -> Unit,
-    navigationAction: (Int) -> Unit
+    navigationAction: (Int) -> Unit,
+    changeFocus: (Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
@@ -217,9 +222,9 @@ private fun PageSelectorGoToTextField(
         onValueChange = { text ->
             var hasNotDigit = false
             text.forEach {
-                if(!it.isDigit()) hasNotDigit = true
+                if (!it.isDigit()) hasNotDigit = true
             }
-            if(!hasNotDigit){
+            if (!hasNotDigit) {
                 updateText(text)
             }
         },
@@ -231,7 +236,14 @@ private fun PageSelectorGoToTextField(
             )
         },
         modifier = Modifier
-            .height(60.dp),
+            .height(60.dp)
+            .onFocusEvent {
+                if (it.isFocused) {
+                    changeFocus(true)
+                } else {
+                    changeFocus(false)
+                }
+            },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = SelectedColor,
             unfocusedBorderColor = ClickableColor,
@@ -243,6 +255,7 @@ private fun PageSelectorGoToTextField(
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(onDone = {
+            changeFocus(false)
             focusManager.clearFocus()
             navigationAction(textValue.toInt())
         }),

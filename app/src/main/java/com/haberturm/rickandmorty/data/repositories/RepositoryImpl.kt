@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class RepositoryImpl : Repository {
-    override fun getDataList(): Flow<CharacterResponse> = flow {
-        val data = RetrofitClient.retrofit.getData()
+    override fun getDataList(page: Int): Flow<CharacterResponse> = flow {
+        val data = RetrofitClient.retrofit.getData(page)
         emit(data)
     }.flowOn(Dispatchers.IO)
 
@@ -18,5 +18,4 @@ class RepositoryImpl : Repository {
         val character = RetrofitClient.retrofit.getSingleCharacter(id)
         emit(character)
     }.flowOn(Dispatchers.IO)
-
 }

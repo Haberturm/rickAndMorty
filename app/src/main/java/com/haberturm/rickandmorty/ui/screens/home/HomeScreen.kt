@@ -1,11 +1,13 @@
 package com.haberturm.rickandmorty.ui.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -21,6 +23,7 @@ import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
 import com.haberturm.rickandmorty.ui.views.PageSelector
 
 const val KEY_PAGE = "PAGE"
+
 object HomeScreenRoute : NavRoute<HomeViewModel> {
     override val route = "home/{$KEY_PAGE}/"
 
@@ -62,6 +65,10 @@ private fun HomeScreen(
                 pageNavigationAction = fun(page: Int) {
                     viewModel.onEvent(HomeEvent.NavigateTo(HomeScreenRoute.get(page)))
                 },
+                pageSelectorFocus = viewModel.pageSelectorFocus.collectAsState().value,
+                pageSelectorChangeFocus = fun(isFocused: Boolean){
+                    viewModel.onEvent(HomeEvent.ChangeFocus(isFocused))
+                }
             )
         }
         is DataState.Loading -> {
@@ -84,8 +91,13 @@ private fun Content(
     updatePageSelectorTextValue: (String) -> Unit,
     pageSelectorState: PageSelectorState,
     pageNavigationAction: (Int) -> Unit,
+    pageSelectorFocus: Boolean,
+    pageSelectorChangeFocus: (Boolean) -> Unit
 ) {
-    LazyColumn {
+    val focusManager = LocalFocusManager.current
+    LazyColumn(Modifier.clickable {
+        focusManager.clearFocus()
+    }) {
         item {
             Row(Modifier.padding(4.dp)) {
                 PageSelector(
@@ -93,7 +105,8 @@ private fun Content(
                     lastPageNum = pageSelectorState.totalPage,
                     pageSelectorTextValue = pageSelectorTextValue,
                     updatePageSelectorTextValue = updatePageSelectorTextValue,
-                    pageNavigationAction = pageNavigationAction
+                    pageNavigationAction = pageNavigationAction,
+                    changeFocus = pageSelectorChangeFocus
                 )
             }
         }
@@ -105,7 +118,11 @@ private fun Content(
                     gender = character.gender,
                     image = character.image,
                     action = {
-                        detailNavigationAction(character.id)
+                        if (pageSelectorFocus){
+                            focusManager.clearFocus()
+                        }else{
+                            detailNavigationAction(character.id)
+                        }
                     }
                 )
             }
