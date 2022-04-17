@@ -3,10 +3,7 @@ package com.haberturm.rickandmorty.ui.screens.details
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -22,6 +19,8 @@ import com.haberturm.rickandmorty.R
 import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.nav.getOrThrow
+import com.haberturm.rickandmorty.ui.theme.ClickableColor
+import com.haberturm.rickandmorty.ui.theme.SelectedColor
 import com.haberturm.rickandmorty.ui.uiModels.DetailUiModel
 import com.haberturm.rickandmorty.ui.views.DetailInfoItem
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
@@ -52,7 +51,10 @@ fun DetailsScreen(
     viewModel: DetailsViewModel
 ){
     Scaffold(topBar = {
-        TopAppBar() {
+        TopAppBar(
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = ClickableColor
+        ) {
             IconButton(onClick = { viewModel.onEvent(DetailsEvent.OnNavigateUp) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
