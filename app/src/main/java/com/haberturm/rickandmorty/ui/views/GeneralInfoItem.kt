@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +23,7 @@ import com.haberturm.rickandmorty.ui.theme.AdditionalTextColor
 import com.haberturm.rickandmorty.ui.theme.ClickableColor
 
 @Composable
-fun Item(
+fun GeneralInfoItem(
     name: String,
     race: String,
     gender: String,
@@ -35,7 +33,7 @@ fun Item(
     Card(
         elevation = 10.dp,
         modifier = Modifier
-            .padding(vertical = 8.dp)
+            .padding(vertical = dimensionResource(id = R.dimen.default_padding).value.dp)
             .fillMaxWidth()
             .clickable {
                 action()
@@ -44,7 +42,7 @@ fun Item(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(dimensionResource(id = R.dimen.default_padding).value.dp)
         ) {
             AsyncImage(
                 model = image,
@@ -57,7 +55,7 @@ fun Item(
             )
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(dimensionResource(id = R.dimen.default_padding).value.dp)
             ) {
                 Text(text = name, fontSize = dimensionResource(id = R.dimen.header_size).value.sp)
                 Text(
@@ -72,7 +70,7 @@ fun Item(
 @Composable
 @Preview
 fun ItemPrev() {
-    Item(
+    GeneralInfoItem(
         name = "Rick Sanchezz",
         race = "Human",
         gender = "Male",

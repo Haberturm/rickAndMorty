@@ -53,7 +53,6 @@ class HomeViewModel @Inject constructor(
                     it.toGeneralUiModel()
                 }
                 _dataState.value = DataState.Success(uiData)
-                Log.i("DATA", "${(_dataState.value as DataState.Success).data}")
             }
             .launchIn(this)
     }
