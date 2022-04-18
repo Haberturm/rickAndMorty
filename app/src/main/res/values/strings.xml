@@ -3,4 +3,7 @@
     <string name="status">Статус: %1$s</string>
     <string name="location">Последнее местоположение: %1$s</string>
     <string name="num_episodes">Появлялся в %1$d %2$s</string>
+    <string name="go_to_text">Перейти к…</string>
+    <string name="loading_text">Загрузка…</string>
+
 </resources>

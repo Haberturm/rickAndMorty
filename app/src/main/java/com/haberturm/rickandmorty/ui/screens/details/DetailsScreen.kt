@@ -23,6 +23,7 @@ import com.haberturm.rickandmorty.ui.theme.ClickableColor
 import com.haberturm.rickandmorty.ui.uiModels.DetailUiModel
 import com.haberturm.rickandmorty.ui.views.DetailInfoItem
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
+import com.haberturm.rickandmorty.ui.views.LoadingScreen
 
 const val KEY_ID = "ARG"
 
@@ -68,7 +69,7 @@ fun DetailsScreen(
                 Content(characterData = (dataState.value as DataState.Success).data as DetailUiModel)
             }
             is DataState.Loading -> {
-                //TODO
+                LoadingScreen()
             }
             is DataState.Failure -> {
                 //TODO
