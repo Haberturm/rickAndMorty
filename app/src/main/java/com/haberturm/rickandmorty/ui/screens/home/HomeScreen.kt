@@ -1,6 +1,7 @@
 package com.haberturm.rickandmorty.ui.screens.home
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,7 +68,7 @@ private fun HomeScreen(
     when (dataState.value) {
         is DataState.Success -> {
             Content(
-                charactersList = (dataState.value as DataState.Success).data as List<GeneralUiModel>, // in this case it is safe
+                charactersList = (dataState.value as DataState.Success).data as List<GeneralUiModel>, // in this case, it is safe
                 detailNavigationAction = fun(id: Int) {
                     viewModel.onEvent(HomeEvent.NavigateTo(DetailsScreenRoute.get(id)))
                 },
@@ -129,7 +131,7 @@ private fun Content(
     }) {
         stickyHeader {
             MainHeader(
-                text = "Рик и Морти",
+                text = stringResource(R.string.rick_and_morty_text),
                 height = if (listState.firstVisibleItemIndex < 1) 150 else 100
             )
         }
@@ -171,7 +173,6 @@ fun MainHeader(
     text: String,
     height: Int,
 ){
-    Log.i("HEIGHT", "$height")
     Row(
         Modifier
             .background(SelectedColor)
@@ -179,8 +180,9 @@ fun MainHeader(
             .height(height.dp)
             .padding(
                 start = dimensionResource(id = R.dimen.default_padding),
-                top = 32.dp
-            ),
+                top = 40.dp
+            )
+            .animateContentSize(),
     ) {
         Text(
             text = text,
