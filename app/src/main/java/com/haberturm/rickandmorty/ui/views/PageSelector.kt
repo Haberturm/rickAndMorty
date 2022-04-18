@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
@@ -30,13 +31,16 @@ fun PageSelector(
     lastPageNum: Int,
     pageSelectorTextValue: String,
     updatePageSelectorTextValue: (String) -> Unit,
+    pageNavigationAction: (Int) -> Unit,
+    changeFocus: (Boolean) -> Unit,
+    textFieldError: Boolean
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth(),
 
-    ) {
+        ) {
         /*
         "magic const" padding because of default padding that 'label' field add to TextField".
         This* padding need for vertical alignment
@@ -44,7 +48,9 @@ fun PageSelector(
         Row(Modifier.padding(top = 5.dp)) {//*
             PageSelectorArrow(
                 painterRes = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_left_24),
-                description = "previous page"
+                description = ArrowIconDescription.PreviousPage().description,
+                navigationAction = { pageNavigationAction(currentPageNum - 1) },
+                active = currentPageNum != 1
             )
             val numOfSelectorItems = 7
             if (currentPageNum in 1..4) {
@@ -52,39 +58,69 @@ fun PageSelector(
                     if (it == numOfSelectorItems - 1) {
                         PageSelectorDotsItem()
                     } else if (it == numOfSelectorItems) {
-                        PageSelectorDigitItem(digit = lastPageNum, selected = false)
+                        PageSelectorDigitItem(
+                            digit = lastPageNum,
+                            selected = false,
+                            navigationAction = { pageNavigationAction(lastPageNum) }
+                        )
                     } else {
-                        PageSelectorDigitItem(digit = it, selected = it == currentPageNum)
+                        PageSelectorDigitItem(
+                            digit = it,
+                            selected = it == currentPageNum,
+                            navigationAction = { pageNavigationAction(it) }
+                        )
                     }
                 }
-
-            }
-            else if (currentPageNum in lastPageNum - 4..lastPageNum) {
-                PageSelectorDigitItem(digit = 1, selected = false)
+            } else if (currentPageNum in lastPageNum - 4..lastPageNum) {
+                PageSelectorDigitItem(
+                    digit = 1,
+                    selected = false,
+                    navigationAction = { pageNavigationAction(1) }
+                )
                 PageSelectorDotsItem()
                 ((lastPageNum - numOfSelectorItems + 2)..lastPageNum).forEach {
-                    PageSelectorDigitItem(digit = it, selected = it == currentPageNum)
+                    PageSelectorDigitItem(
+                        digit = it,
+                        selected = it == currentPageNum,
+                        navigationAction = { pageNavigationAction(it) }
+                    )
                 }
-
-            }
-            else {
-                PageSelectorDigitItem(digit = 1, selected = false)
+            } else {
+                PageSelectorDigitItem(
+                    digit = 1,
+                    selected = false,
+                    navigationAction = { pageNavigationAction(1) }
+                )
                 PageSelectorDotsItem()
                 (currentPageNum - 1..currentPageNum + 1).forEach {
-                    PageSelectorDigitItem(digit = it, selected = it == currentPageNum)
+                    PageSelectorDigitItem(
+                        digit = it,
+                        selected = it == currentPageNum,
+                        navigationAction = { pageNavigationAction(it) }
+                    )
                 }
                 PageSelectorDotsItem()
-                PageSelectorDigitItem(digit = lastPageNum, selected = false)
+                PageSelectorDigitItem(
+                    digit = lastPageNum,
+                    selected = false,
+                    navigationAction = { pageNavigationAction(lastPageNum) }
+                )
             }
             PageSelectorArrow(
                 painterRes = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
-                description = "next page"
+                description = ArrowIconDescription.NextPage().description,
+                navigationAction = { pageNavigationAction(currentPageNum + 1) },
+                active = currentPageNum != lastPageNum
             )
         }
-
         PageSelectorGoToTextField(
             textValue = pageSelectorTextValue,
             updateText = updatePageSelectorTextValue,
+            navigationAction = fun(page: Int) {
+                pageNavigationAction(page)
+            },
+            changeFocus = changeFocus,
+            textFieldError = textFieldError
         )
     }
 }
@@ -96,17 +132,26 @@ fun PageSelectorPrev() {
         currentPageNum = 15,
         lastPageNum = 48,
         "",
-        {}
+        {},
+        {},
+        {},
+        false
     )
 }
 
 @Composable
 private fun PageSelectorArrow(
     painterRes: Painter,
-    description: String
+    description: String,
+    navigationAction: () -> Unit,
+    active: Boolean,
 ) {
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = {
+            if (active) {
+                navigationAction()
+            }
+        },
         modifier = Modifier
             .size(dimensionResource(id = R.dimen.page_selector_item_size).value.dp)
             .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp),
@@ -133,21 +178,23 @@ private fun PageSelectorDotsItem() {
         modifier = Modifier
             .padding(end = dimensionResource(id = R.dimen.page_selector_item_padding).value.dp)
             .size(20.dp),
-
-        )
+    )
 }
 
 @Composable
 private fun PageSelectorDigitItem(
     digit: Int,
-    selected: Boolean
+    selected: Boolean,
+    navigationAction: () -> Unit
 ) {
     OutlinedButton(
         contentPadding = PaddingValues(
             start = 1.dp,
             end = 1.dp,
         ),
-        onClick = { /*TODO*/ },
+        onClick = {
+            navigationAction()
+        },
         colors = if (selected) {
             ButtonDefaults.outlinedButtonColors(
                 backgroundColor = SelectedColor,
@@ -170,13 +217,26 @@ private fun PageSelectorDigitItem(
 @Composable
 private fun PageSelectorGoToTextField(
     textValue: String,
-    updateText: (String) -> Unit
+    updateText: (String) -> Unit,
+    navigationAction: (Int) -> Unit,
+    changeFocus: (Boolean) -> Unit,
+    textFieldError: Boolean
 ) {
     val focusManager = LocalFocusManager.current
+    val localTextFieldError = remember {
+        mutableStateOf(textFieldError)
+    }
+
     OutlinedTextField(
         value = textValue,
-        onValueChange = {
-            updateText(it)
+        onValueChange = { text ->
+            var hasNotDigit = false
+            text.forEach {
+                if (!it.isDigit()) hasNotDigit = true
+            }
+            if (!hasNotDigit) {
+                updateText(text)
+            }
         },
         label = {
             Text(
@@ -186,7 +246,16 @@ private fun PageSelectorGoToTextField(
             )
         },
         modifier = Modifier
-            .height(60.dp),
+            .height(60.dp)
+            .onFocusEvent {
+                if (it.isFocused) {
+                    localTextFieldError.value = false
+                    changeFocus(true)
+                } else {
+                    localTextFieldError.value = textFieldError
+                    changeFocus(false)
+                }
+            },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = SelectedColor,
             unfocusedBorderColor = ClickableColor,
@@ -197,8 +266,16 @@ private fun PageSelectorGoToTextField(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done
         ),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-
+        keyboardActions = KeyboardActions(onDone = {
+            changeFocus(false)
+            focusManager.clearFocus()
+            navigationAction(textValue.toInt())
+        }),
+        isError = localTextFieldError.value
     )
 }
 
+sealed class ArrowIconDescription() {
+    data class NextPage(val description: String = "Next Page") : ArrowIconDescription()
+    data class PreviousPage(val description: String = "Previous Page") : ArrowIconDescription()
+}
