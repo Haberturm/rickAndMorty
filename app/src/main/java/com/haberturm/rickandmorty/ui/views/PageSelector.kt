@@ -10,10 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -160,7 +162,12 @@ private fun PageSelectorArrow(
             top = 1.dp,
             end = 1.dp,
             bottom = 1.dp,
-        )
+        ),
+        enabled = active,
+        colors = ButtonDefaults.buttonColors(
+            disabledBackgroundColor = Color.LightGray,
+            backgroundColor = MaterialTheme.colors.background
+        ),
     ) {
         Icon(
             painter = painterRes,
@@ -240,7 +247,7 @@ private fun PageSelectorGoToTextField(
         },
         label = {
             Text(
-                text = "Перейти к...",
+                text = stringResource(R.string.go_to_text),
                 fontSize = 10.sp,
                 color = SelectedColor
             )

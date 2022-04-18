@@ -10,6 +10,7 @@ import com.haberturm.rickandmorty.ui.nav.RouteNavigator
 import com.haberturm.rickandmorty.ui.uiModels.toDetailUiModel
 import com.haberturm.rickandmorty.ui.uiModels.toGeneralUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,15 +29,18 @@ class DetailsViewModel @Inject constructor(
         getCharacter(id)
     }
 
-    fun onEvent(event: DetailsEvent){
-        when(event){
-            is DetailsEvent.OnNavigateUp ->{
+    fun onEvent(event: DetailsEvent) {
+        when (event) {
+            is DetailsEvent.OnNavigateUp -> {
                 routeNavigator.navigateUp()
+            }
+            is DetailsEvent.OnRefresh -> {
+                getCharacter(id)
             }
         }
     }
 
-    private fun getCharacter(id: Int) = viewModelScope.launch{
+    private fun getCharacter(id: Int) = viewModelScope.launch {
         _dataState.value = DataState.Loading
         repository.getSingleCharacter(id)
             .catch { e ->
@@ -45,9 +49,9 @@ class DetailsViewModel @Inject constructor(
             }
             .onEach { data ->
                 val uiData = data.toDetailUiModel()
+                delay(500) // for smooth loading screen
                 _dataState.value = DataState.Success(uiData)
             }
             .launchIn(this)
-
     }
 }

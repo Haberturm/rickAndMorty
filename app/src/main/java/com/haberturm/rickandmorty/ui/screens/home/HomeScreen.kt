@@ -19,7 +19,9 @@ import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.nav.getOrThrow
 import com.haberturm.rickandmorty.ui.screens.details.DetailsScreenRoute
 import com.haberturm.rickandmorty.ui.uiModels.GeneralUiModel
+import com.haberturm.rickandmorty.ui.views.ErrorView
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
+import com.haberturm.rickandmorty.ui.views.LoadingScreen
 import com.haberturm.rickandmorty.ui.views.PageSelector
 
 const val KEY_PAGE = "PAGE"
@@ -78,10 +80,10 @@ private fun HomeScreen(
             )
         }
         is DataState.Loading -> {
-            //TODO
+            LoadingScreen()
         }
         is DataState.Failure -> {
-            //TODO
+            ErrorView (refreshAction = {viewModel.onEvent(HomeEvent.OnRefresh)})
         }
         else -> {
             Unit

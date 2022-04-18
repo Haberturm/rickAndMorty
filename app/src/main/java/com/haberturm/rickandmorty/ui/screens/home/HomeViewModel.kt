@@ -9,6 +9,7 @@ import com.haberturm.rickandmorty.data.repositories.Repository
 import com.haberturm.rickandmorty.ui.nav.RouteNavigator
 import com.haberturm.rickandmorty.ui.uiModels.toGeneralUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -61,6 +62,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.PageSelectorError -> {
                 _pageSelectorError.value = event.error
             }
+            is HomeEvent.OnRefresh -> {
+                getDataList()
+            }
         }
     }
 
@@ -76,6 +80,7 @@ class HomeViewModel @Inject constructor(
                     it.toGeneralUiModel()
                 }
                 _pageSelectorState.value = _pageSelectorState.value.copy(totalPage = data.info.pages)
+                delay(500) // for smooth loading screen
                 _dataState.value = DataState.Success(uiData)
             }
             .launchIn(this)
