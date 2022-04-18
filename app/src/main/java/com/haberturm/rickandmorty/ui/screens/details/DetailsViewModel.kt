@@ -29,15 +29,18 @@ class DetailsViewModel @Inject constructor(
         getCharacter(id)
     }
 
-    fun onEvent(event: DetailsEvent){
-        when(event){
-            is DetailsEvent.OnNavigateUp ->{
+    fun onEvent(event: DetailsEvent) {
+        when (event) {
+            is DetailsEvent.OnNavigateUp -> {
                 routeNavigator.navigateUp()
+            }
+            is DetailsEvent.OnRefresh -> {
+                getCharacter(id)
             }
         }
     }
 
-    private fun getCharacter(id: Int) = viewModelScope.launch{
+    private fun getCharacter(id: Int) = viewModelScope.launch {
         _dataState.value = DataState.Loading
         repository.getSingleCharacter(id)
             .catch { e ->
@@ -50,6 +53,5 @@ class DetailsViewModel @Inject constructor(
                 _dataState.value = DataState.Success(uiData)
             }
             .launchIn(this)
-
     }
 }

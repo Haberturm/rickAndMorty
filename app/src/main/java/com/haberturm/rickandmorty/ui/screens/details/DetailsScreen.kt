@@ -22,6 +22,7 @@ import com.haberturm.rickandmorty.ui.nav.getOrThrow
 import com.haberturm.rickandmorty.ui.theme.ClickableColor
 import com.haberturm.rickandmorty.ui.uiModels.DetailUiModel
 import com.haberturm.rickandmorty.ui.views.DetailInfoItem
+import com.haberturm.rickandmorty.ui.views.ErrorView
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
 import com.haberturm.rickandmorty.ui.views.LoadingScreen
 
@@ -72,7 +73,9 @@ fun DetailsScreen(
                 LoadingScreen()
             }
             is DataState.Failure -> {
-                //TODO
+                ErrorView(
+                    refreshAction =  {viewModel.onEvent(DetailsEvent.OnRefresh)}
+                )
             }
             else -> {
                 Unit

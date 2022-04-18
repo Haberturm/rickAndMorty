@@ -62,6 +62,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.PageSelectorError -> {
                 _pageSelectorError.value = event.error
             }
+            is HomeEvent.OnRefresh -> {
+                getDataList()
+            }
         }
     }
 
