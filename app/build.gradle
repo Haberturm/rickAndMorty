@@ -67,6 +67,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
     implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-ripple:$compose_version"
+
+    //insets
+    implementation "com.google.accompanist:accompanist-insets:0.23.1"
+    implementation "com.google.accompanist:accompanist-insets-ui:0.23.1"
 
     //di
     implementation "com.google.dagger:hilt-android:2.38.1"
