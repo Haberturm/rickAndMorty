@@ -7,5 +7,6 @@
     <string name="loading_text">Загрузка…</string>
     <string name="refresh_text">Обновить</string>
     <string name="error_text">Что то пошло не так... Обновите страницу</string>
+    <string name="rick_and_morty_text">Рик и Морти</string>
 
 </resources>

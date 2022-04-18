@@ -1,12 +1,16 @@
 package com.haberturm.rickandmorty.ui.views
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
@@ -25,6 +29,8 @@ import com.haberturm.rickandmorty.R
 import androidx.compose.ui.unit.sp
 import com.haberturm.rickandmorty.ui.theme.ClickableColor
 import com.haberturm.rickandmorty.ui.theme.SelectedColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -221,6 +227,7 @@ private fun PageSelectorDigitItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PageSelectorGoToTextField(
     textValue: String,
@@ -233,6 +240,8 @@ private fun PageSelectorGoToTextField(
     val localTextFieldError = remember {
         mutableStateOf(textFieldError)
     }
+    val  coroutineScope = rememberCoroutineScope()
+    val  bringIntoViewRequester = BringIntoViewRequester()
 
     OutlinedTextField(
         value = textValue,
@@ -254,8 +263,14 @@ private fun PageSelectorGoToTextField(
         },
         modifier = Modifier
             .height(60.dp)
+            .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusEvent {
-                if (it.isFocused) {
+                if (it.isFocused || it.hasFocus) {
+                    //ime padding
+                    coroutineScope.launch {
+                        delay(250)
+                        bringIntoViewRequester.bringIntoView()
+                    }
                     localTextFieldError.value = false
                     changeFocus(true)
                 } else {
