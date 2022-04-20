@@ -4,9 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -104,22 +108,17 @@ private fun Content(
     pageSectorTextFieldError: Boolean
 ) {
     val focusManager = LocalFocusManager.current
-    LazyColumn(Modifier.clickable {
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState,
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(state = rememberScrollState())
+            .height(LocalConfiguration.current.screenHeightDp.dp)
+            .clickable {
         focusManager.clearFocus()
     }) {
-        item {
-            Row(Modifier.padding(4.dp)) {
-                PageSelector(
-                    currentPageNum = pageSelectorState.currentPage,
-                    lastPageNum = pageSelectorState.totalPage,
-                    pageSelectorTextValue = pageSelectorTextValue,
-                    updatePageSelectorTextValue = updatePageSelectorTextValue,
-                    pageNavigationAction = pageNavigationAction,
-                    changeFocus = pageSelectorChangeFocus,
-                    textFieldError = pageSectorTextFieldError
-                )
-            }
-        }
+
         items(charactersList) { character ->
             Column(Modifier.padding(horizontal = 8.dp)) {
                 GeneralInfoItem(
@@ -134,6 +133,19 @@ private fun Content(
                             detailNavigationAction(character.id)
                         }
                     }
+                )
+            }
+        }
+        item {
+            Row(Modifier.padding(4.dp)) {
+                PageSelector(
+                    currentPageNum = pageSelectorState.currentPage,
+                    lastPageNum = pageSelectorState.totalPage,
+                    pageSelectorTextValue = pageSelectorTextValue,
+                    updatePageSelectorTextValue = updatePageSelectorTextValue,
+                    pageNavigationAction = pageNavigationAction,
+                    changeFocus = pageSelectorChangeFocus,
+                    textFieldError = pageSectorTextFieldError
                 )
             }
         }
