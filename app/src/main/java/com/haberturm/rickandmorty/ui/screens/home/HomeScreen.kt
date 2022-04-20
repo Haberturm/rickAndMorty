@@ -1,18 +1,22 @@
 package com.haberturm.rickandmorty.ui.screens.home
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
@@ -22,11 +26,13 @@ import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.nav.getOrThrow
 import com.haberturm.rickandmorty.ui.screens.details.DetailsScreenRoute
+import com.haberturm.rickandmorty.ui.theme.SelectedColor
 import com.haberturm.rickandmorty.ui.uiModels.GeneralUiModel
 import com.haberturm.rickandmorty.ui.views.ErrorView
 import com.haberturm.rickandmorty.ui.views.GeneralInfoItem
 import com.haberturm.rickandmorty.ui.views.LoadingScreen
 import com.haberturm.rickandmorty.ui.views.PageSelector
+import com.haberturm.rickandmorty.R
 
 const val KEY_PAGE = "PAGE"
 
@@ -59,7 +65,7 @@ private fun HomeScreen(
     when (dataState.value) {
         is DataState.Success -> {
             Content(
-                charactersList = (dataState.value as DataState.Success).data as List<GeneralUiModel>, // in this case it is safe
+                charactersList = (dataState.value as DataState.Success).data as List<GeneralUiModel>, // in this case, it is safe
                 detailNavigationAction = fun(id: Int) {
                     viewModel.onEvent(HomeEvent.NavigateTo(DetailsScreenRoute.get(id)))
                 },
@@ -95,6 +101,7 @@ private fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(
     charactersList: List<GeneralUiModel>,
@@ -118,7 +125,12 @@ private fun Content(
             .clickable {
         focusManager.clearFocus()
     }) {
-
+        stickyHeader {
+            MainHeader(
+                text = stringResource(R.string.rick_and_morty_text),
+                height = if (listState.firstVisibleItemIndex < 1) 150 else 100
+            )
+        }
         items(charactersList) { character ->
             Column(Modifier.padding(horizontal = 8.dp)) {
                 GeneralInfoItem(
@@ -149,5 +161,29 @@ private fun Content(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun MainHeader(
+    text: String,
+    height: Int,
+){
+    Row(
+        Modifier
+            .background(SelectedColor)
+            .fillMaxWidth()
+            .height(height.dp)
+            .padding(
+                start = dimensionResource(id = R.dimen.default_padding),
+                top = 40.dp
+            )
+            .animateContentSize(),
+    ) {
+        Text(
+            text = text,
+            fontSize = 40.sp,
+            color = Color.White
+        )
     }
 }
