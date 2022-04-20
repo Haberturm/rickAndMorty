@@ -3,6 +3,7 @@ package com.haberturm.rickandmorty.ui.views
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -239,9 +240,9 @@ private fun PageSelectorGoToTextField(
     val localTextFieldError = remember {
         mutableStateOf(textFieldError)
     }
+
     val coroutineScope = rememberCoroutineScope()
     val bringIntoViewRequester = BringIntoViewRequester()
-
     OutlinedTextField(
         value = textValue,
         onValueChange = { text ->
@@ -262,6 +263,7 @@ private fun PageSelectorGoToTextField(
         },
         modifier = Modifier
             .height(60.dp)
+            .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusEvent {
                 if (it.isFocused) {
                     //ime padding
@@ -269,7 +271,6 @@ private fun PageSelectorGoToTextField(
                         delay(250)
                         bringIntoViewRequester.bringIntoView()
                     }
-
                     localTextFieldError.value = false
                     changeFocus(true)
                 } else {

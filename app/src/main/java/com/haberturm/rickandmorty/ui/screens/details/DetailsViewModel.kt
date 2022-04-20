@@ -8,7 +8,6 @@ import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.data.repositories.Repository
 import com.haberturm.rickandmorty.ui.nav.RouteNavigator
 import com.haberturm.rickandmorty.ui.uiModels.toDetailUiModel
-import com.haberturm.rickandmorty.ui.uiModels.toGeneralUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*

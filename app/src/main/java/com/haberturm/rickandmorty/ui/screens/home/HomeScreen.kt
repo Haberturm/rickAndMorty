@@ -23,6 +23,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.haberturm.rickandmorty.data.network.DataState
 import com.haberturm.rickandmorty.ui.nav.NavRoute
 import com.haberturm.rickandmorty.ui.nav.getOrThrow
