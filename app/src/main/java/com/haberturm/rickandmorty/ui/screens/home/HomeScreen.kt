@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -170,15 +171,15 @@ fun MainHeader(
     height: Int,
 ){
     Row(
-        Modifier
+        modifier = Modifier
             .background(SelectedColor)
             .fillMaxWidth()
             .height(height.dp)
             .padding(
                 start = dimensionResource(id = R.dimen.default_padding),
-                top = 40.dp
             )
             .animateContentSize(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text,

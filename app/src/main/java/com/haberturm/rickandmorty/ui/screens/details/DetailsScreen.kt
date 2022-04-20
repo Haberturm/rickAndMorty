@@ -81,6 +81,7 @@ fun DetailsScreen(
                 Unit
             }
         }
+        it //to get rid of warning
     }
 }
 
